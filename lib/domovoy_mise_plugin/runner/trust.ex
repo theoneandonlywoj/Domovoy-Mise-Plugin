@@ -37,12 +37,21 @@ defmodule DomovoyMisePlugin.Runner.Trust do
   @impl Runner
   @spec run(input :: Input.t(), context :: Context.t()) :: Runner.result()
   def run(
-        %Input{worktree: %{path: worktree_path} = worktree, mise: mise},
+        %Input{worktree: worktree, mise: mise},
         %Context{node: node_name}
-      )
-      when is_binary(worktree_path) do
-    with :ok <- Capabilities.trust_worktree_configs(worktree_path, mise, node_name) do
+      ) do
+    with {:ok, worktree_path} <- worktree_path(worktree, node_name),
+         :ok <- Capabilities.trust_worktree_configs(worktree_path, mise, node_name) do
       {:ok, worktree}
+    end
+  end
+
+  @spec worktree_path(any(), String.t() | nil) ::
+          {:ok, String.t()} | {:error, DomovoyCore.Error.t()}
+  defp worktree_path(worktree, node_name) do
+    case Capabilities.worktree_path(worktree) do
+      {:ok, path} -> {:ok, path}
+      :error -> {:error, Capabilities.invalid_worktree_error(node_name)}
     end
   end
 end
