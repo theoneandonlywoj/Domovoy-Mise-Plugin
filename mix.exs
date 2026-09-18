@@ -31,6 +31,7 @@ defmodule DomovoyMisePlugin.MixProject do
   defp deps do
     [
       {:domovoy_core, github: "theoneandonlywoj/Domovoy-Core"},
+      {:jason, "~> 1.4"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
